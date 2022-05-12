@@ -1,0 +1,41 @@
+.img-fluid{
+    height: 50px;
+}
+.product-table thead{
+    background-color: rgb(41, 41, 41);
+    color: #fff;
+}
+
+.product-table tbody tr td{
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+.card-title{
+    font-size: 2em;
+    font-weight: 800;
+}
+
+.single-prd-item{
+    width: 540px;
+    height: 540px;
+}
+
+.single-prd-item img{
+    width: 100%;
+    height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.product-image-thumb{
+    width: 100px;
+    height: 100px;
+}
+
+.product-image-thumb img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+  
+}

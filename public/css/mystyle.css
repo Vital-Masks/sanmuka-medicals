@@ -1,0 +1,156 @@
+.navbar-brand img {
+    width: 160px !important;
+    margin: 8px 0;
+}
+
+.hero-banner__content .fa {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.dropdown-container {
+    display: none;
+    padding-left: 8px;
+}
+
+.filter-list label {
+    font-weight: 500;
+}
+
+.sub-list a {
+    color: rgb(90, 90, 90);
+}
+
+.add-to-card button {
+    background-color: #293792;
+    color: white;
+    width: 180px;
+}
+
+.media .d-flex {
+    height: 100px;
+    width: 100px;
+    border: #293792 solid 2px;
+    margin-right: 10px;
+}
+
+.media .d-flex img {
+    width: 90px !important;
+    object-fit: cover;
+}
+
+.card-product1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-product1:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+
+
+.single-search-product img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+}
+
+.hero-carousel__slide img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+}
+
+.landing-bg1 {
+    background: url("../img/home/bg1.jpg") fixed repeat;
+}
+
+.landing-bg2 {
+    background: url("../img/home/bg2.jpg") fixed repeat;
+}
+
+.landing-bg3 {
+    background: url("../img/home/bg3.jpg") fixed repeat;
+}
+
+.single-prd-item {
+    width: 540px;
+    height: 540px;
+}
+
+.single-prd-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+@media (max-width: 575px) {
+    /* .card-product__img .card-img {
+        height: 150px !important;
+    } */
+
+    .shop-product .card {
+        height: 300px;
+    }
+}
+
+ul.privacy-list {
+    list-style-type: disc !important;
+    list-style-position: inside;
+}
+p {
+    margin-top: 5px;
+}
+
+.checkout-products-det .prod-name a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chechout-products-list {
+    padding: 10px;
+    max-height: 170px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#owl-demo .item{
+    position: relative
+}
+
+#owl-demo .item img{
+    display: block;
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+}
+
+#owl-demo .item .carousel-caption h3{
+    color: white !important;
+}
+
+#owl-demo .item .overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0.5;
+}
+
+.footer-brand img{
+    width: 140px;
+}
+
+.dropdown-menu{
+    right: 0 !important;
+    left: auto !important;
+}
+.header_area .navbar .nav .nav-item.submenu ul{
+    right: 0 !important;
+}

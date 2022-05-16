@@ -58,8 +58,8 @@ Route::post('/checkout-store', 'CheckoutController@store')->name('checkout.store
 Route::get('/confirmation/{id}', 'CheckoutController@confirmation')->name('confirmation');
 
 Route::get('/profile', 'ProfileController@index')->name('profile');
-Route::get('/medicines', 'MedicinesController@clientIndex')->name('medicines');
-Route::get('/search-medicine', 'MedicinesController@search')->name('searchMedicine');
+Route::get('/medicines', 'HomepageController@medicine')->name('medicines');
+Route::get('/search-medicine', 'HomepageController@searchMedicine')->name('searchMedicine');
 
 Route::get('/upload-prescription', 'PrescriptionController@index')->name('uploadPrescription'); 
 Route::post('/post-prescription', 'PrescriptionController@post')->name('PostPrescription'); 

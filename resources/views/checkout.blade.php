@@ -99,7 +99,7 @@
                             </div>
                             <div class="col-md-12 form-group">
                                 <h3>Shipping Details</h3>
-                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
+                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes">{{ old('message') }}</textarea>
                             </div>
 
                             <!-- <div id="OnlinePayment" class="col-md-12 form-group mb-0">
@@ -157,7 +157,7 @@
                             <ul class="list list_2 mt-2">
                                 <li><a href="#">Subtotal <span>{{ presentPrice(Cart::subtotal()) }}</span></a></li>
                                 <!-- <li><a href="#">Tax(13%) <span>{{ presentPrice(Cart::tax()) }}</span></a></li> -->
-                                <li><a href="#">Total <span>$ {{ presentPrice(Cart::total()) }}</span></a></li>
+                                <li><a href="#">Total <span>{{ presentPrice(Cart::total()) }}</span></a></li>
                                 <input type="hidden" name="total" id="total" value="{{ presentPrice(Cart::total()) }}" />
 
                                 <input type="hidden" value="{{ presentPrice(Cart::subtotal()) }}" name="subtotal" id="subtotal" />

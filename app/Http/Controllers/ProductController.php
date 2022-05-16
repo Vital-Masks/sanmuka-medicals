@@ -13,6 +13,12 @@ use PhpParser\Node\Stmt\Foreach_;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:administrator');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +26,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $pagination = 10;
+        $pagination = 20;
 
         $products = Product::orderByDesc('id')->paginate($pagination);
         return view('admin.products')->with('products', $products);
@@ -33,12 +39,18 @@ class ProductController extends Controller
     public function addProduct(Request $request)
     {
         if ($request->isMethod('post')) {
-            $validated = $request->validate([
-                'ProductTitle' => 'required|max:255',
-                'BrandName' => 'required',
-                'MainCategoryName' => 'required',
-                'inputDescription' => 'required',
-            ]);
+            $request->validate(
+                [
+                    'ProductTitle' => 'required|max:50',
+                    'BrandName' => 'required',
+                    'MainCategoryName' => 'required',
+                    'inputDescription' => 'required|max:250',
+                    'image' => 'image|mimes:jpg,png,jpeg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+                ],
+                [
+                    'image.mimes' => 'Please select a jpg,png,jpeg format',
+                ]
+            );
 
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
@@ -69,15 +81,10 @@ class ProductController extends Controller
                 $images->ImageName = $filePath;
                 $images->product_id = $pId;
                 $images->save();
-            } else {
-                $images = new Images();
-                $images->ImageName = "/img/products/noimage.png";
-                $images->product_id = $pId;
-                $images->save();
             }
 
             //price & sice
-       
+
             if ($request->filled('price1')) {
                 $size = new ProductSize();
                 $size->product_id = $pId;
@@ -106,19 +113,9 @@ class ProductController extends Controller
         }
 
         $categories = Category::get();
-
-        $categories_dropdown = "<option selected disabled>Select</option>";
-        foreach ($categories as $cat) {
-            $categories_dropdown .= "<option value='" . $cat->id . "'>" . $cat->name . "</option>";
-        }
-
         $brands = Brands::get();
-        $brands_dropdown = "<option selected disabled>Select</option>";
-        foreach ($brands as $brand) {
-            $brands_dropdown .= "<option value='" . $brand->id . "'>" . $brand->name . "</option>";
-        }
 
-        return view('admin.addProduct')->with(compact('categories_dropdown', 'brands_dropdown'));
+        return view('admin.addProduct')->with(compact('categories', 'brands'));
     }
 
 
@@ -126,14 +123,26 @@ class ProductController extends Controller
     ////////////////////////////////////////////////////////////////
     public function editProduct(Request $request, $id = null)
     {
-
         if ($request->isMethod('post')) {
+            $validated = $request->validate(
+                [
+                    'ProductTitle' => 'required|max:50',
+                    'BrandName' => 'required',
+                    'MainCategoryName' => 'required',
+                    'inputDescription' => 'required|max:250',
+                    'image' => 'image|mimes:jpg,png,jpeg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+                ],
+                [
+                    'image.mimes' => 'Please select a jpg,png,jpeg format',
+                ]
+            );
 
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
 
             Product::where(['id' => $id])->update([
                 'category_id' => $data['MainCategoryName'],
+                'brand_id' => $data['BrandName'],
                 'title' => $data['ProductTitle'],
                 'slug' => strtolower($data['ProductTitle']),
                 'description' => $data['inputDescription']
@@ -154,68 +163,68 @@ class ProductController extends Controller
                 $images->ImageName = $filePath;
                 $images->product_id = $id;
                 $images->save();
-            } else {
-                $images = new Images();
-                $images->ImageName = "/img/products/noimage.png";
-                $images->product_id = $id;
-                $images->save();
             }
 
             //price & sice
-            if ($request->filled('price1')) {
-                ProductSize::where(['id' => $data['sizeId1']])->update([
-                    'size' => $data['size1'],
-                    'price' => $data['price1'],
-                ]);
+            if ($request->filled('price1') && $request->has('sizeId1')) {
+                ProductSize::updateOrCreate(
+                    ['id' => $data['sizeId1']],
+                    [
+                        'size' => $data['size1'],
+                        'price' => filter_var($data['price1'], FILTER_SANITIZE_NUMBER_INT),
+                        'product_id' => $id
+                    ]
+                );
+            }else{
+                $size = new ProductSize();
+                $size->product_id = $id;
+                $size->size = $data['size1'];
+                $size->price = filter_var($data['price1'], FILTER_SANITIZE_NUMBER_INT);
+                $size->save();
             }
 
-            if ($request->filled('price2')) {
-                ProductSize::where(['id' => $data['sizeId2']])->update([
-                    'size' => $data['size2'],
-                    'price' => $data['price2'],
-                ]);
+            if ($request->filled('price2') && $request->has('sizeId2')) {
+                ProductSize::updateOrCreate(
+                    ['id' => $data['sizeId2']],
+                    [
+                        'size' => $data['size2'],
+                        'price' => filter_var($data['price2'], FILTER_SANITIZE_NUMBER_INT),
+                        'product_id' => $id
+                    ]
+                );
+            }else{
+                $size = new ProductSize();
+                $size->product_id = $id;
+                $size->size = $data['size2'];
+                $size->price = filter_var($data['price2'], FILTER_SANITIZE_NUMBER_INT);
+                $size->save();
             }
 
-            if ($request->filled('price3')) {
-                ProductSize::where(['id' => $data['sizeId3']])->update([
-                    'size' => $data['size3'],
-                    'price' => $data['price3'],
-                ]);
+            if ($request->filled('price3') && $request->has('sizeId3')) {
+                ProductSize::updateOrCreate(
+                    ['id' => $data['sizeId3']],
+                    [
+                        'size' => $data['size3'],
+                        'price' => filter_var($data['price3'], FILTER_SANITIZE_NUMBER_INT),
+                        'product_id' => $id
+                    ]
+                );
+            }else{
+                $size = new ProductSize();
+                $size->product_id = $id;
+                $size->size = $data['size3'];
+                $size->price = filter_var($data['price3'], FILTER_SANITIZE_NUMBER_INT);
+                $size->save();
             }
 
             return redirect()->back()->with('flash_message_success', 'Product updated Successfully!');
         }
 
-        $productDetail = Product::where(['id' => $id])->first();
-
-        $images = Images::where(['product_id' => $id])->get();
-
+        $productDetail = Product::where(['id' => $id])->with('brand', 'category', 'sizes', 'images')->first();
         $categories = Category::get();
-        $categories_dropdown = "<option selected disabled>Select</option>";
-        foreach ($categories as $cat) {
-            if ($cat->id == $productDetail->category_id) {
-                $selected = "selected";
-            } else {
-                $selected = "";
-            }
-            $categories_dropdown .= "<option value='" . $cat->id . "' " . $selected . ">" . $cat->name . "</option>";
-        }
-
         $brands = Brands::get();
-        $brands_dropdown = "<option selected disabled>Select</option>";
-        foreach ($brands as $brand) {
-            if ($brand->id == $productDetail->brand_id) {
-                $selected = "selected";
-            } else {
-                $selected = "";
-            }
-            $brands_dropdown .= "<option value='" . $brand->id . "' " . $selected . ">" . $brand->name . "</option>";
-        }
-
-        $sizes = ProductSize::where(['product_id' => $id])->orderBy('created_at', 'desc')->get();
-
         return view('admin.addProduct')
-            ->with(compact('productDetail', 'categories_dropdown', 'images',  'brands_dropdown', 'sizes'));
+            ->with(compact('productDetail', 'categories', 'brands'));
     }
 
 
@@ -266,11 +275,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::where('id', $id)->firstOrFail();
-        $img = Images::where(['product_id' => $id])->first();
-        $images = Images::where(['product_id' => $id])->get();
-        $sizes = ProductSize::where(['product_id' => $id])->get();
+        $product = Product::where('id', $id)->with('images', 'sizes')->firstOrFail();
         return view('admin.productDetail')
-            ->with(compact('product', 'images', 'img', 'sizes'));
+            ->with(compact('product'));
     }
 }

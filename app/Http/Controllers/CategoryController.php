@@ -10,6 +10,12 @@ use App\SubCategory;
 class CategoryController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:administrator');
+    }
+
     // public function __construct(){
     //     $this->middleware('auth');
     // }
@@ -40,7 +46,7 @@ class CategoryController extends Controller
 
         if ($request->isMethod('post')) {
             $request->validate([
-                'CategoryName' => 'required|max:20',
+                'CategoryName' => 'required|max:30',
             ]);
 
             $data = $request->all();
@@ -95,14 +101,14 @@ class CategoryController extends Controller
     {
         if ($request->isMethod('post')) {
             $request->validate([
-                'CategoryName' => 'required|max:20',
+                'CategoryName' => 'required|max:30',
             ]);
 
             $data = $request->all();
             Category::where(['id' => $id])->update([
                 'name' => $data['CategoryName'], 'slug' => strtolower($data['CategoryName'])
             ]);
-            return redirect()->back()->with('flash_message_success', 'Category updated Successfully!');
+            return redirect()->route('AddCategory')->with('flash_message_success', 'Category updated Successfully!');
         } else {
             $categoryDetails = Category::where(['id' => $id])->first();
             $categories = Category::orderByDesc('id')->paginate(10);

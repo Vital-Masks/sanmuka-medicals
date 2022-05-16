@@ -49,42 +49,43 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($checkouts as $ckout)
-                                            {{-- @foreach($ckout->products as $product) --}}
-                                            <tr>
-                                                <td><a href="pages/examples/invoice.html">{{ $ckout->id }}</a></td>
-                                                <td>{{ $ckout->firstName }}</td>
-                                                <td><span class="badge badge-success">New</span></td>
-                                                <td><span
-                                                        class="badge badge-info">{{ $ckout->created_at->toDateString() }}</span>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('checkout.details', $ckout->id) }}"
-                                                        class="btn btn-sm bg-warning">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('checkout.delete', $ckout ->id) }}" class="btn btn-sm bg-warning">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            {{-- @endforeach --}}
-                                        @endforeach
+                                        @forelse($checkouts as $ckout)
+                                        <tr>
+                                            <td>{{ $ckout->id }}</td>
+                                            <td>{{ $ckout->firstName }}</td>
+                                            <td><span class="badge badge-success">
+                                                    {{$ckout->delivered === 1 ? "Delivered" : ($ckout->viewed === 1 ? "Viewed" : "New")}}
+                                                </span></td>
+                                            <td><span class="badge badge-info">{{ $ckout->created_at->toDateString() }}</span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('checkout.details', $ckout->id) }}" class="btn btn-sm bg-warning">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('checkout.delete', $ckout ->id) }}" class="btn btn-sm bg-warning">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                           <td colspan="5"><p class="text-center billing-alert text-danger">No items found!.</p></td>
+                                        </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                             <!-- /.table-responsive -->
                         </div>
                         <!-- /.card-body -->
-                        <div class="card-footer clearfix">
-                            <a href="{{ route('checkoutall') }}"
-                                class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                        <div class="dashboard-card-footer">
+                            {{ $checkouts->links() }}
+
                         </div>
-                        <!-- /.card-footer -->
                     </div>
                 </div>
 
-            
+
             </div>
 
         </div><!-- /.container-fluid -->

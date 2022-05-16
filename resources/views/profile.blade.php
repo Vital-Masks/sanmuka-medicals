@@ -7,12 +7,17 @@
 <section class="section-margin--small">
     <!--================Order Details Area =================-->
     <section class="order_details section-margin--small">
+        
         <div class="container">
-            @if($checkout)    
+        <h1>hello {{ Auth::user()->name }}!</h1>
+            @forelse($checkouts as $checkout)
             <div class="order_details_table">
-                <h2 class="m-0">Your recent order details  #{{$checkout->id}}</h2>
-                <p class="m-0 mb-4">{{date('d-m-Y', strtotime($checkout->created_at))}}</p>
+                @if($checkout)
+                <h2 class="m-0">Your recent order details #{{$checkout ? $checkout->id : ''}}</h2>
+                @endif
+                <p class="m-0 mb-4">{{ $checkout ? date('d-m-Y', strtotime($checkout->created_at)) : ''}}</p>
                 <div class="table-responsive">
+                    @if($checkout)
                     <table class="table table-sm">
                         <thead>
                             <tr>
@@ -78,9 +83,16 @@
                             </tr>
                         </tbody>
                     </table>
+                    @else
+                    <h2 class="text-center">Your orders will be show here!</h2>
+                    @endif
                 </div>
+
             </div>
-            @endif
+            @empty
+            <h6  style="color: red">You don't have any orders!</h6>
+            @endforelse
+            {{ $checkouts->links() }}
         </div>
     </section>
     <!--================End Order Details Area =================-->

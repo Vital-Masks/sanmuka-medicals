@@ -18,10 +18,11 @@ class DashboardController extends Controller
 
     public function getResentOrders()
     {
-        $checkouts = checkout::orderBydesc('id')->where(['viewed' => '0'])->get();
-        $deliveries = checkout::orderBydesc('id')->where(['delivered' => '0'])->get();
+        $allOrders = Prescription::get();
+        $checkouts = checkout::orderBydesc('id')->where(['viewed' => '0'])->paginate(20);
+        $deliveries = checkout::orderBydesc('id')->where(['delivered' => '0'])->paginate(20);
 
-        return view('admin.dashboard')->with(compact('checkouts', 'deliveries'));
+        return view('admin.dashboard')->with(compact('checkouts', 'deliveries','allOrders'));
     }
 
     public function checkoutdetails(Request $request, $id = null)
@@ -36,7 +37,7 @@ class DashboardController extends Controller
 
     public function checkoutall()
     {
-        $checkouts = checkout::orderBydesc('id')->get();
+        $checkouts = checkout::orderBydesc('id')->paginate(20);
 
         return view('admin.allOrders')->with(compact('checkouts'));
     }
@@ -63,9 +64,11 @@ class DashboardController extends Controller
 
     public function prescriptionOrders()
     {
-        $orders = Prescription::orderBydesc('id')->where(['viewed' => '0'])->get();
-        $deliveries = Prescription::orderBydesc('id')->where(['delivered' => '0'])->get();
-        return view('admin.orderByPrescription')->with(compact('orders', 'deliveries'));
+        $allOrders = Prescription::get();
+        $orders = Prescription::orderBydesc('id')->where(['viewed' => '0'])->paginate(20);
+        $deliveries = Prescription::orderBydesc('id')->where(['delivered' => '0'])->paginate(20);
+        $all = false;
+        return view('admin.orderByPrescription')->with(compact('orders', 'deliveries','all','allOrders'));
     }
 
     public function prescriptionDetails(Request $request, $id = null)
@@ -80,9 +83,9 @@ class DashboardController extends Controller
 
     public function prescriptionAll()
     {
-        $orders = Prescription::orderBydesc('id')->get();
-
-        return view('admin.orderByPrescription')->with(compact('orders'));
+        $orders = Prescription::orderBydesc('id')->paginate(20);
+        $all = true;
+        return view('admin.allPrescriptionOrders')->with(compact('orders','all'));
     }
 
     public function prescriptionDelivered($id)

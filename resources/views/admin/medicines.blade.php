@@ -45,12 +45,12 @@
                                         <th>Dosage</th>
                                         <th>Age</th>
                                         <th>Disease</th>
-                                        <th style="width: 400px">Description</th>
+                                        <th style="width: 400px;">Description</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($products as $product)
+                                    @forelse($products as $product)
                                         <tr>
                                             <td>{{ $loop->index+1}}</td>
                                             <td>{{ $product ->title }}</td>
@@ -74,7 +74,11 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                        @empty
+                                        <tr>
+                                           <td colspan="9"><p class="text-center billing-alert text-danger">No items found!.</p></td>
+                                        </tr>
+                                        @endforelse
 
                                 </tbody>
                             </table>

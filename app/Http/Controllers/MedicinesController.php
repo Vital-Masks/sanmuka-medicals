@@ -15,6 +15,13 @@ class MedicinesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:administrator');
+    }
+
     public function index()
     {
         $pagination = 10;
@@ -28,15 +35,21 @@ class MedicinesController extends Controller
     public function addMedicine(Request $request)
     {
         if ($request->isMethod('post')) {
-            $validated = $request->validate([
-                'ProductTitle' => 'required|max:20',
-                'BrandName' => 'required',
-                'MainCategoryName' => 'required',
-                'dosage' => 'required|max:20',
-                'age' => 'required|max:20',
-                'disease' => 'required|max:20',
-                'description' => 'required',
-            ]);
+            $validated = $request->validate(
+                [
+                    'ProductTitle' => 'required|max:50',
+                    'BrandName' => 'required',
+                    'MainCategoryName' => 'required',
+                    'dosage' => 'required|max:20',
+                    'age' => 'required|max:20',
+                    'disease' => 'required|max:30',
+                    'description' => 'required|max:250',
+                    'image' => 'image|mimes:jpg,png,jpeg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+                ],
+                [
+                    'image.mimes' => 'Please select a jpg,png,jpeg format',
+                ]
+            );
 
             $data = $request->all();
 
@@ -69,29 +82,12 @@ class MedicinesController extends Controller
                 $images->medicine_id = $pId;
                 $images->save();
             }
-            // else {
-            //     $images = new MedicinesImages();
-            //     $images->ImageName = "/img/products/noimage.png";
-            //     $images->product_id = $pId;
-            //     $images->save();
-            // }
             return redirect()->back()->with('flash_message_success', 'Medicine added Successfully!');
         }
 
         $categories = Category::get();
-
-        $categories_dropdown = "<option selected disabled>Select</option>";
-        foreach ($categories as $cat) {
-            $categories_dropdown .= "<option value='" . $cat->id . "'>" . $cat->name . "</option>";
-        }
-
         $brands = Brands::get();
-        $brands_dropdown = "<option selected disabled>Select</option>";
-        foreach ($brands as $brand) {
-            $brands_dropdown .= "<option value='" . $brand->id . "'>" . $brand->name . "</option>";
-        }
-
-        return view('admin.addMedicine')->with(compact('categories_dropdown', 'brands_dropdown'));
+        return view('admin.addMedicine')->with(compact('categories', 'brands'));
     }
 
     //// Edit Product
@@ -99,6 +95,22 @@ class MedicinesController extends Controller
     public function editMedicine(Request $request, $id = null)
     {
         if ($request->isMethod('post')) {
+            $validated = $request->validate(
+                [
+                    'ProductTitle' => 'required|max:50',
+                    'BrandName' => 'required',
+                    'MainCategoryName' => 'required',
+                    'dosage' => 'required|max:20',
+                    'age' => 'required|max:20',
+                    'disease' => 'required|max:30',
+                    'description' => 'required|max:250',
+                    'image' => 'image|mimes:jpg,png,jpeg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+                ],
+                [
+                    'image.mimes' => 'Please select a jpg,png,jpeg format',
+                ]
+            );
+
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             Medicine::where(['id' => $id])->update([
@@ -114,24 +126,20 @@ class MedicinesController extends Controller
             //upload multi image
             if ($request->hasFile('image')) {
                 $image_array = $request->file('image');
-                // $array_len = count($image_array);
 
-                if ($request->hasFile('image')) {
-                    $image_array = $request->file('image');
 
-                    $image_ext = $image_array->getClientOriginalExtension();
-                    $filename = rand(111, 99999) . "." . $image_ext;
-                    $folder = '/img/medicines/';
-                    $destinationPath = public_path($folder);
-                    $filePath = $folder . $filename;
+                $image_ext = $image_array->getClientOriginalExtension();
+                $filename = rand(111, 99999) . "." . $image_ext;
+                $folder = '/img/medicines/';
+                $destinationPath = public_path($folder);
+                $filePath = $folder . $filename;
 
-                    $image_array->move($destinationPath, $filename);
+                $image_array->move($destinationPath, $filename);
 
-                    $images = new MedicinesImages();
-                    $images->ImageName = $filePath;
-                    $images->medicine_id = $id;
-                    $images->save();
-                }
+                $images = new MedicinesImages();
+                $images->ImageName = $filePath;
+                $images->medicine_id = $id;
+                $images->save();
 
                 // for ($i = 0; $i < $array_len; $i++) {
                 //     $image_array = $request->file('image');
@@ -154,34 +162,13 @@ class MedicinesController extends Controller
             return redirect()->back()->with('flash_message_success', 'Medicine updated Successfully!');
         }
 
-        $productDetail = Medicine::where(['id' => $id])->first();
-
-        $images = MedicinesImages::where(['medicine_id' => $id])->get();
+        $productDetail = Medicine::where(['id' => $id])->with('brand', 'category', 'images')->first();
 
         $categories = Category::get();
-        $categories_dropdown = "<option selected disabled>Select</option>";
-        foreach ($categories as $cat) {
-            if ($cat->id == $productDetail->category_id) {
-                $selected = "selected";
-            } else {
-                $selected = "";
-            }
-            $categories_dropdown .= "<option value='" . $cat->id . "' " . $selected . ">" . $cat->name . "</option>";
-        }
-
         $brands = Brands::get();
-        $brands_dropdown = "<option selected disabled>Select</option>";
-        foreach ($brands as $brand) {
-            if ($brand->id == $productDetail->brand_id) {
-                $selected = "selected";
-            } else {
-                $selected = "";
-            }
-            $brands_dropdown .= "<option value='" . $brand->id . "' " . $selected . ">" . $brand->name . "</option>";
-        }
-
+    
         return view('admin.addMedicine')
-            ->with(compact('productDetail', 'categories_dropdown', 'images',  'brands_dropdown'));
+            ->with(compact('productDetail', 'categories',  'brands'));
     }
 
 
@@ -231,33 +218,8 @@ class MedicinesController extends Controller
      */
     public function show($id)
     {
-        $product = Medicine::where('id', $id)->firstOrFail();
-        $img = MedicinesImages::where(['medicine_id' => $id])->first();
-        $images = MedicinesImages::where(['medicine_id' => $id])->get();
+        $product = Medicine::where('id', $id)->with('images')->firstOrFail();
         return view('admin.medicineDetail')
-            ->with(compact('product', 'images', 'img'));
-    }
-
-
-
-
-    // client
-    public function clientIndex()
-    {
-        $medicines = Medicine::with('images')->orderByDesc('id')->paginate(9);
-        return view('medicines')->with('medicines', $medicines);
-    }
-
-    public function search(Request $request)
-    {
-
-        $pagination = 9;
-
-        $query = $request->search;
-        $medicines = Medicine::with('images')->where('title', 'LIKE', "%$query%")->paginate($pagination);
-
-        // dd($query);
-
-        return view('medicines')->with('medicines', $medicines);
+            ->with(compact('product'));
     }
 }

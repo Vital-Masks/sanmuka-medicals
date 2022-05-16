@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="icon" href="img/Fevicon.png" type="image/png">
+    <link rel="icon" href="img/favicon.jpg" type="image/png">
 
     <link rel="stylesheet" href="{{ URL::asset('vendors/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('vendors/fontawesome/css/all.min.css') }}">

@@ -30,7 +30,6 @@ class HomeController extends Controller
 
     public function privacy()
     {
-        dd('hello');
         return view('privacy');
     }
 

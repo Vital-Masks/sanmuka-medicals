@@ -70,19 +70,34 @@
                             </div>
                             <div class="form-group">
                                 <label for="BrandName">Brand</label>
-                                <select class="form-control" id="BrandName" name="BrandName">
-                                    <?php echo $brands_dropdown; ?>
+                                <select id="BrandName" name="BrandName" class="form-control @error('BrandName') is-invalid @enderror" autocomplete="BrandName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($brands as $brand)
+                                    @if ($productDetail->brand->name == $brand->name)
+                                    <option value="{{ $brand->id}}" selected>{{ $brand->name}}</option>
+                                    @else
+                                    <option value="{{ $brand->id}}">{{ $brand->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
-                                @error('BrandName')
+                                @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div>
+
                             <div class="form-group">
                                 <label for="MainCategoryName">Category</label>
-                                <select class="form-control" id="MainCategoryName" name="MainCategoryName">
-                                    <?php echo $categories_dropdown; ?>
+                                <select id="MainCategoryName" name="MainCategoryName" class="form-control @error('MainCategoryName') is-invalid @enderror" autocomplete="MainCategoryName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($categories as $cat)
+                                    @if ($productDetail->category->name == $cat->name)
+                                    <option value="{{ $cat->id}}" selected>{{ $cat->name}}</option>
+                                    @else
+                                    <option value="{{ $cat->id}}">{{ $cat->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                                 @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
@@ -129,14 +144,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputFile">Product Images</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile02" name="image">
-                                        <label class="custom-file-label" for="image">Choose file</label>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">Upload</span>
-                                    </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input  @error('image') is-invalid @enderror" id="inputGroupFile02" name="image">
+                                    <label class="custom-file-label" for="image">Choose file</label>
+                                    @error('image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -161,11 +176,18 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="BrandName">Brand</label>
-                                <select class="form-control @error('BrandName') is-invalid @enderror" id="BrandName" name="BrandName" value="{{ old('BrandName') }}">
-                                    <?php echo $brands_dropdown; ?>
+                                <label for="BrandName">Category</label>
+                                <select id="BrandName" name="BrandName" class="form-control @error('BrandName') is-invalid @enderror" autocomplete="BrandName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($brands as $brand)
+                                    @if (old('BrandName' ) == $brand->name)
+                                    <option value="{{ $brand->name}}" selected>{{ $brand->name}}</option>
+                                    @else
+                                    <option value="{{ $brand->name}}">{{ $brand->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
-                                @error('BrandName')
+                                @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -173,8 +195,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="MainCategoryName">Category</label>
-                                <select class="form-control @error('MainCategoryName') is-invalid @enderror" id="MainCategoryName" name="MainCategoryName" value="{{ old('MainCategoryName') }}">
-                                    <?php echo $categories_dropdown; ?>
+                                <select id="MainCategoryName" name="MainCategoryName" class="form-control @error('MainCategoryName') is-invalid @enderror" autocomplete="MainCategoryName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($categories as $cat)
+                                    @if (old('MainCategoryName' ) == $cat->name)
+                                    <option value="{{ $cat->name}}" selected>{{ $cat->name}}</option>
+                                    @else
+                                    <option value="{{ $cat->name}}">{{ $cat->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                                 @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
@@ -211,7 +240,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror" rows="4" placeholder="Enter description" value="{{ old('description') }}"></textarea>
+                                <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror" rows="4" placeholder="Enter description" value="{{ old('description') }}">{{ old('description') }}</textarea>
                                 @error('description')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -220,11 +249,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputFile">Product Images</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile02" name="image">
-                                        <label class="custom-file-label" for="image">Choose file</label>
-                                    </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input  @error('image') is-invalid @enderror" id="inputGroupFile02" name="image">
+                                    <label class="custom-file-label" for="image">Choose file</label>
+                                    @error('image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -257,7 +289,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($images as $img)
+                                @foreach($productDetail->images as $img)
                                 <tr>
                                     <td>
                                         <img src="{{ asset($img->ImageName) }}" alt="" class="img-fluid">

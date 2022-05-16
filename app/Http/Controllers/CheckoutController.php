@@ -34,17 +34,30 @@ class CheckoutController extends Controller
             return redirect()->back()->with('auth_error', 'You need to Login/Register before make an order.');
         }
         try {
-            $request->validate([
-                'firstName' => 'required|max:20',
-                'lastName' => 'required|max:20',
-                'nic' => 'required|regex: /^\d{9}[VvXx]$/',
-                'phoneNumber' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-                'email' => 'required|email',
-                'address' => 'required',
-                'city' => 'required',
-            ]);
+            $request->validate(
+                [
+                    'firstName' => 'required|max:50',
+                    'lastName' => 'required|max:50',
+                    'nic' => 'required|regex: /^\d{9}[VvXx]$/', // /^[0-9]{7}[0][0-9]{4}$/
+                    'phoneNumber' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:9|max:13',
+                    'email' => 'required|email',
+                    'address' => 'required|max:25',
+                    'city' => 'required|max:25',
+                    'orderNotes' => 'max:250',
+                ],
+                [
+                    'firstName.required' => 'Please enter First Name',
+                    'lastName.required' => 'Please enter Last Name',
+                    'nic.required' => 'Please enter nic',
+                    'phoneNumber.required' => 'Please enter Phone Number',
+                    'email.required' => 'Please enter Email',
+                    'address.required' => 'Please enter Address',
+                    'city.required' => 'Please enter City',
+                    'phoneNumber.min' => 'The number must be at least 9 values',
+                    'phoneNumber.max' => 'The number cant exceed 13 values',
+                ]
+            );
 
-          
             $order = checkout::create([
                 'user_id' => Auth::user()->id,
                 'firstName' => $request->firstName,
@@ -76,8 +89,7 @@ class CheckoutController extends Controller
 
     public function confirmation($id)
     {
-        $checkout = checkout::where(['id' => $id])->first();
-        $checkout_product = checkout_product::where(['checkout_id' => $id])->get();
-        return view('confirmation')->with(compact('checkout', 'checkout_product'));;
+        $checkout = checkout::where(['id' => $id])->with('products')->first();
+        return view('confirmation')->with(compact('checkout', 'checkout_product'));
     }
 }

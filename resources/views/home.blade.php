@@ -56,7 +56,7 @@
             </div>
             <div class="row">
                 @foreach($products1 as $product)
-                <div class="col-md-6 col-lg-3 col-xl-2">
+                <div class="col-md-6 col-lg-3 col-xl-3">
                     <div class="card text-center card-product">
                         <div class="card-product__img">
                             @if($product->images->count())
@@ -118,7 +118,7 @@
             </div>
             <div class="row">
                 @foreach($products2 as $product)
-                <div class="col-md-6 col-lg-3 col-xl-2">
+                <div class="col-md-6 col-lg-3 col-xl-3">
                     <div class="card text-center card-product">
                         <div class="card-product__img">
                             @if($product->images->count())

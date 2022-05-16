@@ -7,6 +7,12 @@ use App\Brands;
 
 class BrandsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:administrator');
+    }
+    
     public function index()
     {
         $pagination = 10;
@@ -19,7 +25,7 @@ class BrandsController extends Controller
     {
         if ($request->isMethod('post')) {
             $request->validate([
-                'BrandName' => 'required|max:20',
+                'BrandName' => 'required|max:30',
             ]);
             $data = $request->all();
             $brand = new Brands;
@@ -39,14 +45,14 @@ class BrandsController extends Controller
     {
         if ($request->isMethod('post')) {
             $request->validate([
-                'BrandName' => 'required|max:20',
+                'BrandName' => 'required|max:30',
             ]);
 
             $data = $request->all();
             Brands::where(['id' => $id])->update([
                 'name' => $data['BrandName'], 'slug' => strtolower($data['BrandName'])
             ]);
-            return redirect()->back()->with('flash_message_success', 'Category updated Successfully!');
+            return redirect()->route('AddBrand')->with('flash_message_success', 'Category updated Successfully!');
         } else {
             $brandDetails = Brands::where(['id' => $id])->first();
             $brands = Brands::orderByDesc('id')->paginate(10);

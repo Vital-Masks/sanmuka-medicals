@@ -940,6 +940,13 @@ a {
 
 .card-product__img {
     position: relative;
+    height: 200px;
+    width: 100%;
+}
+
+.card-product__img img{
+    height: 100%;
+    object-fit: contain;
 }
 
 .card-product__imgOverlay {
@@ -1778,8 +1785,8 @@ a {
 
 .blog_post img {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 250px;
+    object-fit: contain;
 }
 
 .blog_details {

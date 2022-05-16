@@ -22,15 +22,28 @@ class PrescriptionController extends Controller
     public function post(Request $request)
     {
         try {
-            $request->validate([
-                'firstName' => 'required|max:20',
-                'lastName' => 'required|max:20',
-                'nic' => 'required|regex: /^\d{9}[VvXx]$/',
-                'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-                'email' => 'required|email',
-                'address' => 'required',
-                'image' => 'required',
-            ]);
+            $request->validate(
+                [
+                    'firstName' => 'required|max:50',
+                    'lastName' => 'required|max:50',
+                    'nic' => 'required|regex: /^\d{9}[VvXx]$/', // /^[0-9]{7}[0][0-9]{4}$/
+                    'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:9|max:13',
+                    'email' => 'required|email',
+                    'address' => 'required|max:25',
+                    'orderNotes' => 'max:250',
+                    'image' => 'required|image|mimes:jpg,png,jpeg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
+                ],
+                [
+                    'firstName.required' => 'Please enter First Name',
+                    'lastName.required' => 'Please enter Last Name',
+                    'nic.required' => 'Please enter nic',
+                    'phone.required' => 'Please enter Phone Number',
+                    'email.required' => 'Please enter Email',
+                    'address.required' => 'Please enter Address',
+                    'phoneNumber.min' => 'The number must be at least 9 values',
+                    'phoneNumber.max' => 'The number cant exceed 13 values',
+                ]
+            );
 
             if ($request->hasFile('image')) {
                 $image_array = $request->file('image');

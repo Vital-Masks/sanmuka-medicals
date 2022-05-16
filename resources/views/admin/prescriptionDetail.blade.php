@@ -119,12 +119,14 @@
                         <!-- /.row -->
 
                         <!-- this row will not appear when printing -->
+                        @if($prescriptionDetails->delivered === 0 )
                         <div class="row no-print">
                             <div class="col-12">
                                 <a href="{{ route('PrescriptionDelivered', $prescriptionDetails->id) }}" class="btn btn-primary float-right" style="margin-right: 5px;">
                                     Delivered </a>
                             </div>
                         </div>
+                        @endif
                     </div>
                     <!-- /.invoice -->
                 </div><!-- /.col -->

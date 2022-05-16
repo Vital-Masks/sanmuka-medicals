@@ -70,7 +70,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control mb-10" rows="5" name="orderNotes" placeholder="Order Notes" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Order Notes'"></textarea>
+                    <textarea class="form-control mb-10" rows="5" name="orderNotes" placeholder="Order Notes" onfocus="this.placeholder = ''" 
+                    onblur="this.placeholder = 'Order Notes'">{{ old('orderNotes') }}</textarea>
                 </div>
                 <div class="form-group">
                     <div class="custom-file">

@@ -31,15 +31,15 @@
           <div class="col-12 col-sm-6">
             <h3 class="d-inline-block d-sm-none">{{ $product ->title }}</h3>
             <div class="single-prd-item col-12">
-              @if($img != null)
-              <img src="{{ asset($img->ImageName) }}" class="product-image" alt="Product Image">
+              @if($product->images[0] != null)
+              <img src="{{ asset($product->images[0]->ImageName) }}" class="product-image" alt="Product Image">
               @else
-              <img src="/img/products/noimage.png" class="product-image" alt="Product Image">
+              <img src="/img/products/no-image.png" class="product-image" alt="Product Image">
               @endif
 
             </div>
             <div class="col-12 product-image-thumbs">
-              @foreach($images as $img)
+              @foreach($product->images as $img)
               <div class="product-image-thumb active">
                 <img src="{{ asset($img->ImageName) }}" alt="Product Image">
               </div>

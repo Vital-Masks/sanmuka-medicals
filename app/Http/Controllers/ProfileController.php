@@ -9,15 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $user = Auth::user();
-        $checkout = checkout::where(['user_id' => Auth::user()->id])->with('products')->first();
+        $checkouts = checkout::where(['user_id' => Auth::user()->id])->with('products')->orderByDesc('created_at')->paginate(5);
 
         if ($user->roles->pluck('name')->contains('administrator')) {
             return redirect()->route('dashboard');
         } else {
-            return view('profile')->with(compact('checkout'));
+            return view('profile')->with(compact('checkouts'));
         }
     }
 }

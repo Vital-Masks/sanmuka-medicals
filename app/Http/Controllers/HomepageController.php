@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Contact;
+use App\Medicine;
 
 class HomepageController extends Controller
 {
@@ -23,7 +24,7 @@ class HomepageController extends Controller
                 'email' => 'required|email',
                 'message' => 'required',
             ]);
-            
+
             $data = $request->all();
             $contact = new Contact;
 
@@ -40,8 +41,28 @@ class HomepageController extends Controller
         }
     }
 
-     public function privacy()
+    public function privacy()
     {
         return view('privacy');
+    }
+
+    public function medicine()
+    {
+        $medicines = Medicine::with('images')->orderByDesc('id')->paginate(9);
+        return view('medicines')->with('medicines', $medicines);
+    }
+
+
+    public function searchMedicine(Request $request)
+    {
+
+        $pagination = 9;
+
+        $query = $request->search;
+        $medicines = Medicine::with('images')->where('title', 'LIKE', "%$query%")->paginate($pagination);
+
+        // dd($query);
+
+        return view('medicines')->with('medicines', $medicines);
     }
 }

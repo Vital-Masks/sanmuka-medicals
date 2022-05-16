@@ -148,9 +148,10 @@
                                 </button> --}}
 
 
-
+                                @if($checkoutdetail->delivered === 0 )
                                 <a href="{{ route('delivered', $checkoutdetail->id) }}" class="btn btn-primary float-right" style="margin-right: 5px;">
                                     Delivered </a>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -24,9 +24,9 @@
         </div>
         <div class="row">
             @forelse($medicines as $med)
-            <div class="col-sm-6 col-lg-4 mb-4 mb-lg-0">
+            <div class="col-sm-6 col-lg-3 mb-4 mb-lg-0">
                 <article class="categories_post">
-                    <h4>Brand: {{ $med->brand->name}}</h4>
+                    <h4 class="bg-green-400 py-1">Brand: {{ $med->brand->name}}</h4>
                     <div class="blog_post">
                         @if($med->images->count())
                         <img src="{{ asset($med->images[0]->ImageName) }}" alt="">
@@ -37,7 +37,7 @@
                             <a href="#">
                                 <h2>{{ $med->title}}</h2>
                             </a>
-                            <p class="mt-2">
+                            <p class="mt-2 h-36 text-ellipsis overflow-hidden ">
                                 {{ $med->description}}
                             </p>
                             <ul class="mt-2">

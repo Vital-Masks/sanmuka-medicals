@@ -63,27 +63,54 @@
                                 <label for="ProductTitle">Product Title</label>
                                 <input type="text" class="form-control" id="ProductTitle" name="ProductTitle" placeholder="Enter title" value="{{ $productDetail->title }}">
                             </div>
+
+
                             <div class="form-group">
-                                <label for="MainCategoryName">Brand</label>
-                                <select class="form-control" id="MainCategoryName" name="MainCategoryName">
-                                    <?php echo $brands_dropdown; ?>
+                                <label for="BrandName">Brand</label>
+                                <select id="BrandName" name="BrandName" class="form-control @error('BrandName') is-invalid @enderror" autocomplete="BrandName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($brands as $brand)
+                                    @if ($productDetail->brand->name == $brand->name)
+                                    <option value="{{ $brand->id}}" selected>{{ $brand->name}}</option>
+                                    @else
+                                    <option value="{{ $brand->id}}">{{ $brand->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="MainCategoryName">Category</label>
-                                <select class="form-control" id="MainCategoryName" name="MainCategoryName">
-                                    <?php echo $categories_dropdown; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="ProductTitle">Discount</label>
-                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" placeholder="Enter the discount amount" value="{{ $productDetail->discount }}">
-                                @error('discount')
+                                @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="MainCategoryName">Category</label>
+                                <select id="MainCategoryName" name="MainCategoryName" class="form-control @error('MainCategoryName') is-invalid @enderror" autocomplete="MainCategoryName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($categories as $cat)
+                                    @if ($productDetail->category->name == $cat->name)
+                                    <option value="{{ $cat->id}}" selected>{{ $cat->name}}</option>
+                                    @else
+                                    <option value="{{ $cat->id}}">{{ $cat->name}}</option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                                @error('MainCategoryName')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <!-- <label for="ProductTitle">Discount</label> -->
+                                <input type="hidden" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" placeholder="Enter the discount amount" value="{{ $productDetail->discount }}" value="0">
+                                <!-- @error('discount')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror -->
                             </div>
                             <div class="form-group">
                                 <label for="inputDescription">Product Description</label>
@@ -91,11 +118,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputFile">Product Images</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile02" name="image" >
-                                        <label class="custom-file-label" for="multiImage">Choose file</label>
-                                    </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input  @error('image') is-invalid @enderror" id="inputGroupFile02" name="image">
+                                    <label class="custom-file-label" for="image">Choose file</label>
+                                    @error('image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -104,8 +134,8 @@
                             <h6>Product Size/Weight & Price</h6>
                             <small class="text-red">At least give one price</small>
 
-                            <div class="mt-3"> 
-                                @foreach($sizes->reverse() as $size)
+                            <div class="mt-3">
+                                @foreach($productDetail->sizes->reverse() as $size)
                                 <div class="row ">
                                     <div class="col form-group">
                                         <label for="size{{ $loop->index+1}}"> Size</label>
@@ -113,18 +143,18 @@
                                     </div>
                                     <div class="col form-group">
                                         <label for="price{{ $loop->index+1}}">Price</label>
-                                        <input type="text" class="form-control @error('price{{ $loop->index+1}}') is-invalid @enderror"  name="price{{ $loop->index+1}}" placeholder="10" 
-                                        value="{{ $size->price }}">
+                                        <input type="text" class="form-control @error('price{{ $loop->index+1}}') is-invalid @enderror" name="price{{ $loop->index+1}}" placeholder="10" value="{{ $size->price }}">
                                         <input type="text" value="{{ $size->id }}" name="sizeId{{ $loop->index+1}}" hidden>
                                     </div>
                                 </div>
                                 @endforeach
 
-                                @if($sizes->count() == 1)
+                                @if($productDetail->sizes->count() == 1)
                                 <div class="row ">
                                     <div class="col form-group">
                                         <label for="size2">Size</label>
                                         <input type="text" class="form-control @error('size2') is-invalid @enderror" id="size2" name="size2" placeholder="50g" value="{{ old('size2') }}">
+                                        <input type="hidden" name="sizeId2" value="nan">
                                     </div>
                                     <div class="col form-group">
                                         <label for="price2">Price</label>
@@ -141,7 +171,7 @@
                                         <input type="text" class="form-control @error('price3') is-invalid @enderror" id="inputPrice3" name="price3" placeholder="30" value="{{ old('price3') }}">
                                     </div>
                                 </div>
-                                @elseif ($sizes->count() == 2)
+                                @elseif ($productDetail->sizes->count() == 2)
                                 <div class="row ">
                                     <div class="col form-group">
                                         <label for="size3">Size</label>
@@ -177,20 +207,16 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="BrandName">Brand</label>
-                                <select class="form-control @error('BrandName') is-invalid @enderror" id="BrandName" name="BrandName" value="{{ old('BrandName') }}">
-                                    <?php echo $brands_dropdown; ?>
-                                </select>
-                                @error('BrandName')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="MainCategoryName">Category</label>
-                                <select class="form-control @error('MainCategoryName') is-invalid @enderror" id="MainCategoryName" name="MainCategoryName" value="{{ old('MainCategoryName') }}">
-                                    <?php echo $categories_dropdown; ?>
+                                <label for="BrandName">Category</label>
+                                <select id="BrandName" name="BrandName" class="form-control @error('BrandName') is-invalid @enderror" autocomplete="BrandName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($brands as $brand)
+                                    @if (old('BrandName' ) == $brand->name)
+                                    <option value="{{ $brand->name}}" selected>{{ $brand->name}}</option>
+                                    @else
+                                    <option value="{{ $brand->name}}">{{ $brand->name}}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                                 @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
@@ -199,17 +225,37 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="ProductTitle">Discount</label>
-                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" placeholder="Enter the discount amount" value="{{ old('discount') }}">
-                                @error('discount')
+                                <label for="MainCategoryName">Category</label>
+                                <select id="MainCategoryName" name="MainCategoryName" class="form-control @error('MainCategoryName') is-invalid @enderror" autocomplete="MainCategoryName">
+                                    <option value="">@lang('Choose')...</option>
+                                    @ @foreach($categories as $cat)
+                                    @if (old('MainCategoryName' ) == $cat->name)
+                                    <option value="{{ $cat->name}}" selected>{{ $cat->name}}</option>
+                                    @else
+                                    <option value="{{ $cat->name}}">{{ $cat->name}}</option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                                @error('MainCategoryName')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div>
                             <div class="form-group">
+                                <!-- <label for="ProductTitle">Discount</label> -->
+                                <input type="hidden" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" placeholder="Enter the discount amount" value="{{ old('discount') }}" value="0">
+                                <!-- @error('discount')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror -->
+                            </div>
+                            <div class="form-group">
                                 <label for="inputDescription">Product Description</label>
-                                <textarea id="inputDescription" name="inputDescription" class="form-control @error('inputDescription') is-invalid @enderror" rows="4" placeholder="Enter description" value="{{ old('inputDescription') }}"></textarea>
+                                <textarea id="inputDescription" name="inputDescription" class="form-control @error('inputDescription') is-invalid @enderror" rows="4" placeholder="Enter description" value="{{ old('inputDescription') }}">
+                                {{ old('inputDescription') }}
+                                </textarea>
                                 @error('inputDescription')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -219,11 +265,14 @@
 
                             <div class="form-group">
                                 <label for="exampleInputFile">Product Images</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile02" name="image">
-                                        <label class="custom-file-label" for="image">Choose file</label>
-                                    </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input  @error('image') is-invalid @enderror" id="inputGroupFile02" name="image">
+                                    <label class="custom-file-label" for="image">Choose file</label>
+                                    @error('image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                             <hr>
@@ -293,7 +342,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($images as $img)
+                                @foreach($productDetail->images as $img)
                                 <tr>
                                     <td>
                                         <img src="{{ asset($img->ImageName) }}" alt="" class="img-fluid">
@@ -321,4 +370,3 @@
 <!-- /.content-wrapper -->
 
 @endsection
-
